@@ -1,4 +1,6 @@
 .idea/
+.cog
+oryx-build-commands.txt
 
 training/
 
