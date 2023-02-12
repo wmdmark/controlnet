@@ -6,6 +6,8 @@ import os
 from subprocess import call
 from cldm.model import create_model, load_state_dict
 from ldm.models.diffusion.ddim import DDIMSampler
+from PIL import Image
+import numpy as np
 
 from gradio_canny2image import process
 
@@ -45,7 +47,7 @@ class Predictor(BasePredictor):
         """Load the model into memory to make running multiple predictions efficient"""
         self.model = create_model('./models/cldm_v15.yaml').cuda()
         self.model.load_state_dict(load_state_dict('./models/control_sd15_canny.pth', location='cuda'))
-        self.ddim_sampler = DDIMSampler(model)
+        self.ddim_sampler = DDIMSampler(self.model)
 
     def predict(
         self,
@@ -73,8 +75,28 @@ class Predictor(BasePredictor):
         # if not os.path.exists(f"models/{model}"):
         #     download_model(model)
 
-        inputs = [input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, scale, seed, eta, low_threshold, high_threshold]
-        outputs = process(inputs)
+        # load input_image
+        input_image = Image.open(input_image)
+        # convert to numpy
+        input_image = np.array(input_image)
+
+        # inputs = [input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, scale, seed, eta, low_threshold, high_threshold]
+        outputs = process(
+            input_image,
+            prompt,
+            a_prompt,
+            n_prompt,
+            num_samples,
+            image_resolution,
+            ddim_steps,
+            scale,
+            seed,
+            eta,
+            low_threshold,
+            high_threshold,
+            self.model,
+            self.ddim_sampler,
+        )
         # outputs from numpy to PIL
         outputs = Image.fromarray(outputs)
         # save the output image
