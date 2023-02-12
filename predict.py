@@ -8,6 +8,7 @@ from cldm.model import create_model, load_state_dict
 from ldm.models.diffusion.ddim import DDIMSampler
 from PIL import Image
 import numpy as np
+from typing import List
 
 from gradio_canny2image import process
 
@@ -68,7 +69,7 @@ class Predictor(BasePredictor):
         eta: float = Input(description="eta (DDIM)", default=0.0),
         a_prompt: str = Input(description="Added Prompt", default="best quality, extremely detailed"),
         n_prompt: str = Input(description="Negative Prompt", default="longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality"),
-    ) -> Path:
+    ) -> List[Path]:
         """Run a single prediction on the model"""
         
         # check that the model is downloaded
@@ -97,8 +98,9 @@ class Predictor(BasePredictor):
             self.model,
             self.ddim_sampler,
         )
-        # outputs from numpy to PIL
-        outputs = Image.fromarray(outputs)
-        # save the output image
-        outputs.save("tmp/output.png")
-        return Path("tmp/output.png")
+        # outputs from list to PIL
+        outputs = [Image.fromarray(output) for output in outputs]
+        # save outputs to file
+        outputs = [output.save(f"tmp/output_{i}.png") for i, output in enumerate(outputs)]
+        # return paths to output files
+        return [Path(f"tmp/output_{i}.png") for i in range(len(outputs))]
