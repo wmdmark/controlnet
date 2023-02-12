@@ -6,7 +6,8 @@ build:
   gpu: true
 
   # a list of ubuntu apt packages to install
-  # system_packages:
+  system_packages:
+    - "python3-opencv"
     # - "libgl1-mesa-glx"
     # - "libglib2.0-0"
 
