@@ -15,7 +15,7 @@ from typing import List
 # from gradio_hed2image import process_hed
 # from gradio_normal2image import process_normal
 # from gradio_hough2image import process_mlsd
-from gradio_fake_scribble2image import process_scribble
+from gradio_scribble2image import process_scribble
 
 from utils import get_state_dict_path, download_model, model_dl_urls, annotator_dl_urls
 
@@ -30,7 +30,7 @@ class Predictor(BasePredictor):
 
     def predict(
         self,
-        input_image: Path = Input(description="Input image"),
+        image: Path = Input(description="Input image"),
         prompt: str = Input(description="Prompt for the model"),
         # model: str = Input(
         #     description="Type of model to use",
@@ -55,7 +55,7 @@ class Predictor(BasePredictor):
         eta: float = Input(description="eta (DDIM)", default=0.0),
         a_prompt: str = Input(description="Added Prompt", default="best quality, extremely detailed"),
         n_prompt: str = Input(description="Negative Prompt", default="longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality"),
-        detect_resolution: int = Input(description="Resolution for detection (only applicable when model type is 'HED' or 'scribble')", default=512, ge=128, le=1024), # only applicable when model type is 'HED' or 'scribble'
+        # detect_resolution: int = Input(description="Resolution for detection (only applicable when model type is 'HED')", default=512, ge=128, le=1024), # only applicable when model type is 'HED'
         # bg_threshold: float = Input(description="Background Threshold (only applicable when model type is 'normal')", default=0.0, ge=0.0, le=1.0), # only applicable when model type is 'normal'
         # value_threshold: float = Input(description="Value Threshold (only applicable when model type is 'MLSD')", default=0.1, ge=0.01, le=2.0), # only applicable when model type is 'MLSD'
         # distance_threshold: float = Input(description="Distance Threshold (only applicable when model type is 'MLSD')", default=0.1, ge=0.01, le=20.0), # only applicable when model type is 'MLSD'
@@ -69,7 +69,7 @@ class Predictor(BasePredictor):
             seed = int(seed)
 
         # load input_image
-        input_image = Image.open(input_image)
+        input_image = Image.open(image)
         # convert to numpy
         input_image = np.array(input_image)
 
@@ -156,7 +156,6 @@ class Predictor(BasePredictor):
             n_prompt,
             num_samples,
             image_resolution,
-            detect_resolution,
             ddim_steps,
             scale,
             seed,
