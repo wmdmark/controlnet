@@ -10,11 +10,11 @@ from PIL import Image
 import numpy as np
 from typing import List
 
-from gradio_canny2image import process_canny
-from gradio_depth2image import process_depth
+# from gradio_canny2image import process_canny
+# from gradio_depth2image import process_depth
 from gradio_hed2image import process_hed
-from gradio_normal2image import process_normal
-from gradio_hough2image import process_mlsd
+# from gradio_normal2image import process_normal
+# from gradio_hough2image import process_mlsd
 
 from utils import get_state_dict_path, download_model, model_dl_urls, annotator_dl_urls
 
@@ -29,20 +29,28 @@ class Predictor(BasePredictor):
 
     def predict(
         self,
-        input_image: Path = Input(description="Grayscale input image"),
+        input_image: Path = Input(description="Input image"),
         prompt: str = Input(description="Prompt for the model"),
         # model: str = Input(
         #     description="Type of model to use",
         #     choices=["canny", "depth", "hed", "normal", "mlsd", "openpose", "scribble", "seg"],
         #     default="canny"
         # ),
-        num_samples: int = Input(description="Number of samples", default=1),
-        image_resolution: int = Input(description="Image resolution", default=512),
+        num_samples: str = Input(
+            description="Number of samples (higher values may OOM)",
+            choices=['1', '4'],
+            default='1'
+        ),
+        image_resolution: str = Input(
+            description="Image resolution to be generated",
+            choices = ['256', '512', '768'],
+            default='512'
+        ),
         # low_threshold: int = Input(description="Canny low threshold (only applicable when model type is 'canny')", default=100, ge=1, le=255), # only applicable when model type is 'canny'
         # high_threshold: int = Input(description="Canny high threshold (only applicable when model type is 'canny')", default=200, ge=1, le=255), # only applicable when model type is 'canny'
         ddim_steps: int = Input(description="Steps", default=20),
-        scale: float = Input(description="Guidance Scale", default=9.0),
-        seed: int = Input(description="Seed", default=0),
+        scale: float = Input(description="Guidance Scale", default=9.0, ge=0.1, le=30.0),
+        seed: int = Input(description="Seed", default=None),
         eta: float = Input(description="eta (DDIM)", default=0.0),
         a_prompt: str = Input(description="Added Prompt", default="best quality, extremely detailed"),
         n_prompt: str = Input(description="Negative Prompt", default="longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality"),
@@ -52,6 +60,12 @@ class Predictor(BasePredictor):
         # distance_threshold: float = Input(description="Distance Threshold (only applicable when model type is 'MLSD')", default=0.1, ge=0.01, le=20.0), # only applicable when model type is 'MLSD'
     ) -> List[Path]:
         """Run a single prediction on the model"""
+        num_samples = int(num_samples)
+        image_resolution = int(image_resolution)
+        if not seed:
+            seed = np.random.randint(1000000)
+        else:
+            seed = int(seed)
 
         # load input_image
         input_image = Image.open(input_image)
