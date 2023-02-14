@@ -1,7 +1,7 @@
 .idea/
 .cog
 oryx-build-commands.txt
-tmp/*
+tmp/*.png
 
 training/
 

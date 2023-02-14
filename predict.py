@@ -15,11 +15,12 @@ from typing import List
 # from gradio_hed2image import process_hed
 # from gradio_normal2image import process_normal
 # from gradio_hough2image import process_mlsd
-from gradio_scribble2image import process_scribble
+# from gradio_scribble2image import process_scribble
+from gradio_seg2image import process_seg
 
 from utils import get_state_dict_path, download_model, model_dl_urls, annotator_dl_urls
 
-MODEL_TYPE = "scribble"
+MODEL_TYPE = "seg"
 
 class Predictor(BasePredictor):
     def setup(self):
@@ -55,7 +56,7 @@ class Predictor(BasePredictor):
         eta: float = Input(description="eta (DDIM)", default=0.0),
         a_prompt: str = Input(description="Added Prompt", default="best quality, extremely detailed"),
         n_prompt: str = Input(description="Negative Prompt", default="longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality"),
-        # detect_resolution: int = Input(description="Resolution for detection (only applicable when model type is 'HED')", default=512, ge=128, le=1024), # only applicable when model type is 'HED'
+        detect_resolution: int = Input(description="Resolution for detection (only applicable when model type is 'HED' or 'Segmentation')", default=512, ge=128, le=1024), # only applicable when model type is 'HED' or 'seg'
         # bg_threshold: float = Input(description="Background Threshold (only applicable when model type is 'normal')", default=0.0, ge=0.0, le=1.0), # only applicable when model type is 'normal'
         # value_threshold: float = Input(description="Value Threshold (only applicable when model type is 'MLSD')", default=0.1, ge=0.01, le=2.0), # only applicable when model type is 'MLSD'
         # distance_threshold: float = Input(description="Distance Threshold (only applicable when model type is 'MLSD')", default=0.1, ge=0.01, le=20.0), # only applicable when model type is 'MLSD'
@@ -149,13 +150,28 @@ class Predictor(BasePredictor):
         #     self.model,
         #     self.ddim_sampler,
         # )
-        outputs = process_scribble(
+        # outputs = process_scribble(
+        #     input_image,
+        #     prompt,
+        #     a_prompt,
+        #     n_prompt,
+        #     num_samples,
+        #     image_resolution,
+        #     ddim_steps,
+        #     scale,
+        #     seed,
+        #     eta,
+        #     self.model,
+        #     self.ddim_sampler,
+        # )
+        outputs = process_seg(
             input_image,
             prompt,
             a_prompt,
             n_prompt,
             num_samples,
             image_resolution,
+            detect_resolution,
             ddim_steps,
             scale,
             seed,
