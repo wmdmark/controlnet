@@ -3,6 +3,8 @@ import argparse
 # add command line arg for model type
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_type", type=str, default="canny", help="Model type to download")
+# add a binary flag to wipe the weights folder
+parser.add_argument("--wipe", action="store_true", help="Wipe the weights folder")
 args = parser.parse_args()
 
 MODEL_TYPE = args.model_type
