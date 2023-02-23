@@ -1,6 +1,14 @@
 # ControlNet
 
-Official implementation of [Adding Conditional Control to Text-to-Image Diffusion Models](https://github.com/lllyasviel/ControlNet/raw/main/github_page/control.pdf).
+Cog implementation of [Adding Conditional Control to Text-to-Image Diffusion Models](https://github.com/lllyasviel/ControlNet/raw/main/github_page/control.pdf).
+
+To run this Cog model:
+1. clone this repo
+1. run `cog run python download_weights.py --model_type='desired-model-type-goes-here'`
+1. run `cog predict -i image='@your_img.png' -i prompt='your prompt'`
+1. push to Replicate with `cog push`, if you like
+
+# About ControlNet
 
 ControlNet is a neural network structure to control diffusion models by adding extra conditions.
 

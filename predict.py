@@ -43,13 +43,13 @@ class Predictor(BasePredictor):
             choices = ['256', '512', '768'],
             default='512'
         ),
-        low_threshold: int = Input(description="Canny line detection low threshold (only applicable when model type is 'canny')", default=100, ge=1, le=255), # only applicable when model type is 'canny'
-        high_threshold: int = Input(description="Canny line detection high threshold (only applicable when model type is 'canny')", default=200, ge=1, le=255), # only applicable when model type is 'canny'
+        low_threshold: int = Input(description="Canny line detection low threshold", default=100, ge=1, le=255), # only applicable when model type is 'canny'
+        high_threshold: int = Input(description="Canny line detection high threshold", default=200, ge=1, le=255), # only applicable when model type is 'canny'
         ddim_steps: int = Input(description="Steps", default=20),
         scale: float = Input(description="Scale for classifier-free guidance", default=9.0, ge=0.1, le=30.0),
         seed: int = Input(description="Seed", default=None),
         eta: float = Input(description="Controls the amount of noise that is added to the input data during the denoising diffusion process. Higher value -> more noise", default=0.0),
-        a_prompt: str = Input(description="Added Prompt to be appended", default="best quality, extremely detailed"),
+        a_prompt: str = Input(description="Additional text to be appended to prompt", default="best quality, extremely detailed"),
         n_prompt: str = Input(description="Negative Prompt", default="longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality"),
         # detect_resolution: int = Input(description="Resolution for detection)", default=512, ge=128, le=1024), # only applicable when model type is 'HED', 'seg', or 'MLSD'
         # bg_threshold: float = Input(description="Background Threshold (only applicable when model type is 'normal')", default=0.0, ge=0.0, le=1.0), # only applicable when model type is 'normal'
