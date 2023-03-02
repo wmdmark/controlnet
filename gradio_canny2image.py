@@ -8,14 +8,19 @@ from cldm.hack import disable_verbosity
 disable_verbosity()
 
 from pytorch_lightning import seed_everything
-from annotator.util import resize_image, HWC3
+from annotator.util import resize_image_wh, HWC3
 from annotator.canny import apply_canny
 from cldm.model import create_model, load_state_dict
 from ldm.models.diffusion.ddim import DDIMSampler
 
 def process_canny(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, scale, seed, eta, low_threshold, high_threshold, model, ddim_sampler):
+
     with torch.no_grad():
-        img = resize_image(HWC3(input_image), image_resolution)
+
+        # image_resolution is a string like "512x512"
+        # get width and height
+        image_resolution_w, image_resolution_h = image_resolution.split("x")
+        img = resize_image_wh(HWC3(input_image), int(image_resolution_w), int(image_resolution_h))
         H, W, C = img.shape
 
         detected_map = apply_canny(img, low_threshold, high_threshold)

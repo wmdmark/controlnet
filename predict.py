@@ -11,7 +11,7 @@ import numpy as np
 from typing import List
 from utils import get_state_dict_path, download_model, model_dl_urls, annotator_dl_urls
 
-MODEL_TYPE = "openpose"
+MODEL_TYPE = "canny"
 
 if MODEL_TYPE == "canny":
     from gradio_canny2image import process_canny
@@ -46,10 +46,9 @@ class Predictor(BasePredictor):
             choices=['1', '4'],
             default='1'
         ),
-        image_resolution: str = Input(
+        image_resolution = Input(
             description="Image resolution to be generated",
-            choices = ['256', '512', '768'],
-            default='512'
+            default='512x512',
         ),
         low_threshold: int = Input(description="Canny line detection low threshold", default=100, ge=1, le=255), # only applicable when model type is 'canny'
         high_threshold: int = Input(description="Canny line detection high threshold", default=200, ge=1, le=255), # only applicable when model type is 'canny'
@@ -66,7 +65,10 @@ class Predictor(BasePredictor):
     ) -> List[Path]:
         """Run a single prediction on the model"""
         num_samples = int(num_samples)
-        image_resolution = int(image_resolution)
+        image_resolution_w, image_resolution_h = image_resolution.split('x')
+        image_resolution_w = int(image_resolution_w)
+        image_resolution_h = int(image_resolution_h)
+
         if not seed:
             seed = np.random.randint(1000000)
         else:
@@ -110,103 +112,103 @@ class Predictor(BasePredictor):
                 self.model,
                 self.ddim_sampler,
             )
-        elif MODEL_TYPE == "hed":
-            outputs = process_hed(
-                input_image,
-                prompt,
-                a_prompt,
-                n_prompt,
-                num_samples,
-                image_resolution,
-                detect_resolution,
-                ddim_steps,
-                scale,
-                seed,
-                eta,
-                self.model,
-                self.ddim_sampler,
-            )
-        elif MODEL_TYPE == "normal":
-            outputs = process_normal(
-                input_image,
-                prompt,
-                a_prompt,
-                n_prompt,
-                num_samples,
-                image_resolution,
-                ddim_steps,
-                scale,
-                seed,
-                eta,
-                bg_threshold,
-                self.model,
-                self.ddim_sampler,
-            )
-        elif MODEL_TYPE == "mlsd":
-            outputs = process_mlsd(
-                input_image,
-                prompt,
-                a_prompt,
-                n_prompt,
-                num_samples,
-                image_resolution,
-                detect_resolution,
-                ddim_steps,
-                scale,
-                seed,
-                eta,
-                value_threshold,
-                distance_threshold,
-                self.model,
-                self.ddim_sampler,
-            )
-        elif MODEL_TYPE == "scribble":
-            outputs = process_scribble(
-                input_image,
-                prompt,
-                a_prompt,
-                n_prompt,
-                num_samples,
-                image_resolution,
-                ddim_steps,
-                scale,
-                seed,
-                eta,
-                self.model,
-                self.ddim_sampler,
-            )
-        elif MODEL_TYPE == "seg":
-            outputs = process_seg(
-                input_image,
-                prompt,
-                a_prompt,
-                n_prompt,
-                num_samples,
-                image_resolution,
-                detect_resolution,
-                ddim_steps,
-                scale,
-                seed,
-                eta,
-                self.model,
-                self.ddim_sampler,
-            )
-        elif MODEL_TYPE == "openpose":
-            outputs = process_pose(
-                input_image,
-                prompt,
-                a_prompt,
-                n_prompt,
-                num_samples,
-                image_resolution,
-                detect_resolution,
-                ddim_steps,
-                scale,
-                seed,
-                eta,
-                self.model,
-                self.ddim_sampler,
-            )
+        # elif MODEL_TYPE == "hed":
+        #     outputs = process_hed(
+        #         input_image,
+        #         prompt,
+        #         a_prompt,
+        #         n_prompt,
+        #         num_samples,
+        #         image_resolution,
+        #         detect_resolution,
+        #         ddim_steps,
+        #         scale,
+        #         seed,
+        #         eta,
+        #         self.model,
+        #         self.ddim_sampler,
+        #     )
+        # elif MODEL_TYPE == "normal":
+        #     outputs = process_normal(
+        #         input_image,
+        #         prompt,
+        #         a_prompt,
+        #         n_prompt,
+        #         num_samples,
+        #         image_resolution,
+        #         ddim_steps,
+        #         scale,
+        #         seed,
+        #         eta,
+        #         bg_threshold,
+        #         self.model,
+        #         self.ddim_sampler,
+        #     )
+        # elif MODEL_TYPE == "mlsd":
+        #     outputs = process_mlsd(
+        #         input_image,
+        #         prompt,
+        #         a_prompt,
+        #         n_prompt,
+        #         num_samples,
+        #         image_resolution,
+        #         detect_resolution,
+        #         ddim_steps,
+        #         scale,
+        #         seed,
+        #         eta,
+        #         value_threshold,
+        #         distance_threshold,
+        #         self.model,
+        #         self.ddim_sampler,
+        #     )
+        # elif MODEL_TYPE == "scribble":
+        #     outputs = process_scribble(
+        #         input_image,
+        #         prompt,
+        #         a_prompt,
+        #         n_prompt,
+        #         num_samples,
+        #         image_resolution,
+        #         ddim_steps,
+        #         scale,
+        #         seed,
+        #         eta,
+        #         self.model,
+        #         self.ddim_sampler,
+        #     )
+        # elif MODEL_TYPE == "seg":
+        #     outputs = process_seg(
+        #         input_image,
+        #         prompt,
+        #         a_prompt,
+        #         n_prompt,
+        #         num_samples,
+        #         image_resolution,
+        #         detect_resolution,
+        #         ddim_steps,
+        #         scale,
+        #         seed,
+        #         eta,
+        #         self.model,
+        #         self.ddim_sampler,
+        #     )
+        # elif MODEL_TYPE == "openpose":
+        #     outputs = process_pose(
+        #         input_image,
+        #         prompt,
+        #         a_prompt,
+        #         n_prompt,
+        #         num_samples,
+        #         image_resolution,
+        #         detect_resolution,
+        #         ddim_steps,
+        #         scale,
+        #         seed,
+        #         eta,
+        #         self.model,
+        #         self.ddim_sampler,
+        #     )
         
         # outputs from list to PIL
         outputs = [Image.fromarray(output) for output in outputs]

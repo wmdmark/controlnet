@@ -8,17 +8,18 @@ from cldm.hack import disable_verbosity
 disable_verbosity()
 
 from pytorch_lightning import seed_everything
-from annotator.util import resize_image, HWC3
+from annotator.util import resize_image, resize_image_wh, HWC3
 from annotator.midas import apply_midas
 from cldm.model import create_model, load_state_dict
 from ldm.models.diffusion.ddim import DDIMSampler
 
 def process_depth(input_image, prompt, a_prompt, n_prompt, num_samples, image_resolution, detect_resolution, ddim_steps, scale, seed, eta, model, ddim_sampler):
     with torch.no_grad():
+        image_resolution_w, image_resolution_h = image_resolution.split("x")
         input_image = HWC3(input_image)
         detected_map, _ = apply_midas(resize_image(input_image, detect_resolution))
         detected_map = HWC3(detected_map)
-        img = resize_image(input_image, image_resolution)
+        img = resize_image_wh(input_image, int(image_resolution_w), int(image_resolution_h))
         H, W, C = img.shape
 
         detected_map = cv2.resize(detected_map, (W, H), interpolation=cv2.INTER_LINEAR)

@@ -3,6 +3,7 @@
 Cog implementation of [Adding Conditional Control to Text-to-Image Diffusion Models](https://github.com/lllyasviel/ControlNet/raw/main/github_page/control.pdf).
 
 To run this Cog model:
+
 1. clone this repo
 1. run `cog run python download_weights.py --model_type='desired-model-type-goes-here'`
 1. run `cog predict -i image='@your_img.png' -i prompt='your prompt'`
@@ -14,17 +15,17 @@ ControlNet is a neural network structure to control diffusion models by adding e
 
 ![img](github_page/he.png)
 
-It copys the weights of neural network blocks into a "locked" copy and a "trainable" copy. 
+It copys the weights of neural network blocks into a "locked" copy and a "trainable" copy.
 
-The "trainable" one learns your condition. The "locked" one preserves your model. 
+The "trainable" one learns your condition. The "locked" one preserves your model.
 
 Thanks to this, training with small dataset of image pairs will not destroy the production-ready diffusion models.
 
-The "zero convolution" is 1×1 convolution with both weight and bias initialized as zeros. 
+The "zero convolution" is 1×1 convolution with both weight and bias initialized as zeros.
 
 Before training, all zero convolutions output zeros, and ControlNet will not cause any distortion.
 
-No layer is trained from scratch. You are still fine-tuning. Your original model is safe. 
+No layer is trained from scratch. You are still fine-tuning. Your original model is safe.
 
 This allows training on small-scale or even personal devices.
 
@@ -51,7 +52,7 @@ First create a new conda environment
     conda env create -f environment.yaml
     conda activate control
 
-All models and detectors can be downloaded from [our huggingface page](https://huggingface.co/lllyasviel/ControlNet). Make sure that SD models are put in "ControlNet/models" and detectors are put in "ControlNet/annotator/ckpts". Make sure that you download all necessary pretrained weights and detector models from that huggingface page, including HED edge detection model, Midas depth estimation model, Openpose, and so on. 
+All models and detectors can be downloaded from [our huggingface page](https://huggingface.co/lllyasviel/ControlNet). Make sure that SD models are put in "ControlNet/models" and detectors are put in "ControlNet/annotator/ckpts". Make sure that you download all necessary pretrained weights and detector models from that huggingface page, including HED edge detection model, Midas depth estimation model, Openpose, and so on.
 
 We provide 9 Gradio apps with these models.
 
@@ -105,7 +106,7 @@ Stable Diffusion 1.5 + ControlNet (using Scribbles)
 
     python gradio_scribble2image.py
 
-Note that the UI is based on Gradio, and Gradio is somewhat difficult to customize. Right now you need to draw scribbles outside the UI (using your favorite drawing software, for example, MS Paint) and then import the scribble image to Gradio. 
+Note that the UI is based on Gradio, and Gradio is somewhat difficult to customize. Right now you need to draw scribbles outside the UI (using your favorite drawing software, for example, MS Paint) and then import the scribble image to Gradio.
 
 Prompt: "turtle"
 ![p](github_page/p7.png)
@@ -176,7 +177,7 @@ Stable Diffusion 1.5 + ControlNet (using depth map)
 
 Great! Now SD 1.5 also have a depth control. FINALLY. So many possibilities (considering SD1.5 has much more community models than SD2).
 
-Note that different from Stability's model, the ControlNet receive the full 512×512 depth map, rather than 64×64 depth. Note that Stability's SD2 depth model use 64*64 depth maps. This means that the ControlNet will preserve more details in the depth map.
+Note that different from Stability's model, the ControlNet receive the full 512×512 depth map, rather than 64×64 depth. Note that Stability's SD2 depth model use 64\*64 depth maps. This means that the ControlNet will preserve more details in the depth map.
 
 This is always a strength because if users do not want to preserve more details, they can simply use another SD to post-process an i2i. But if they want to preserve more details, ControlNet becomes their only choice. Again, SD2 uses 64×64 depth, we use 512×512.
 
@@ -197,7 +198,7 @@ Prompt: "Cute toy"
 Prompt: "Plaster statue of Abraham Lincoln"
 ![p](github_page/p18.png)
 
-Compared to depth model, this model seems to be a bit better at preserving the geometry. This is intuitive: minor details are not salient in depth maps, but are salient in normal maps. Below is the depth result with same inputs. You can see that the hairstyle of the man in the input image is modified by depth model, but preserved by the normal model. 
+Compared to depth model, this model seems to be a bit better at preserving the geometry. This is intuitive: minor details are not salient in depth maps, but are salient in normal maps. Below is the depth result with same inputs. You can see that the hairstyle of the man in the input image is modified by depth model, but preserved by the normal model.
 
 Prompt: "Plaster statue of Abraham Lincoln"
 ![p](github_page/p19.png)
@@ -218,7 +219,7 @@ We provide simple python scripts to process images.
 
 # Train with Your Own Data
 
-Training a ControlNet is as easy as (or even easier than) training a simple pix2pix. 
+Training a ControlNet is as easy as (or even easier than) training a simple pix2pix.
 
 [See the steps here](train.md).
 
